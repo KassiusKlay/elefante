@@ -4,8 +4,15 @@ import datetime
 import math
 
 
-codigos = ['1-1', '1-2']
-centros = ['Oeiras', 'Mem Martins']
+codigos = [
+        '1-1', '1-2', '1-3', '1-4', '1-5', '1-6', '1-7', '1-8', '1-9',
+        '1-A', '1-B', '2-1', '2-2', '2-3', '2-4', '2-5', '2-6', '2-7',
+        '2-8', '2-9', '2-A', '3-1', '3-2', '3-3', '3-4', '3-5', '3-6',
+        '3-7', '3-8', '3-9', '3-A', '4-1', '4-2', '4-3', '4-4', '4-5']
+
+centros = [
+        'Oeiras', 'Mem Martins', 'Maia', 'São João da Talha',
+        'Alverca', 'Comuns']
 
 
 def show_doc(df):
