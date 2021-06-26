@@ -62,7 +62,7 @@ def save_doc(state, df):
 
     cols = st.beta_columns(2)
     mes = cols[0].selectbox(
-            'Mes Referência', range(1, 13),
+            'Mês Referência', range(1, 13),
             index=mes_default, key='mes')
     ano = cols[1].number_input(
             'Ano Referência', value=ano_default, step=1, key='ano')
