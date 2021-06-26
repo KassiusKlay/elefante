@@ -4,7 +4,9 @@ from utils import show_doc, save_doc
 
 def show(state):
     st.write('# Consultar Documento')
-
+    if state.df.empty:
+        st.warning('Não há ficheiros guardados')
+        st.stop()
 
     cols = st.beta_columns(4)
     doc_id = cols[0].number_input(
@@ -20,12 +22,10 @@ def show(state):
         state.alterar = True
         state.guardado = None
     if state.alterar:
-        cancelar = placeholder.button('Cancelar alteracao')
+        cancelar = placeholder.button('Cancelar Alteração')
         if cancelar:
             state.alterar = None
         save_doc(state, df)
         if state.guardado:
             state.alterar = None
             state.guardado = None
-
-

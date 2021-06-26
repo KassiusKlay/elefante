@@ -55,10 +55,10 @@ def save_doc(state, df):
 
     cols = st.beta_columns(2)
     mes = cols[0].selectbox(
-            'Mes Referencia', range(1, 13),
+            'Mes Referência', range(1, 13),
             index=mes_default, key='mes')
     ano = cols[1].number_input(
-            'Ano Referencia', value=ano_default, step=1, key='ano')
+            'Ano Referência', value=ano_default, step=1, key='ano')
     data = pd.to_datetime(str(ano) + str(mes), format='%Y%m')
 
     for i in range(linhas):
@@ -84,7 +84,7 @@ def save_doc(state, df):
                 valor = float(valor)
                 total_sem_iva += valor
             except ValueError:
-                st.warning('Valor tem de ser um numero')
+                st.warning('Valor tem de ser numérico')
                 st.stop()
         df.at[i, ['codigo', 'centro', 'valor']] = [codigo, centro, valor]
 
@@ -99,7 +99,7 @@ def save_doc(state, df):
         try:
             iva = float(iva)
         except ValueError:
-            st.warning('IVA tem de ser um numero')
+            st.warning('Valor tem de ser numérico')
             st.stop()
     total_documento = total_sem_iva + iva
     st.write('### Total Documento', total_documento)
