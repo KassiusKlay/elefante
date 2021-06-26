@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import datetime
 import math
+from utils import show_doc, save_doc
 
 
 def guardar_doc(state):
@@ -58,12 +59,7 @@ def guardar_doc(state):
     df = df[['data', 'codigo', 'centro', 'valor', 'iva']]
     if not math.isnan(total_documento):
         st.write('### Documento')
-        styler = df.style.format({
-            "data": lambda x: x.strftime('%m-%Y'),
-            'valor': lambda x: '{:.2f}'.format(x),
-            'iva': lambda x: '{:.2f}'.format(x),
-            'total': lambda x: '{:.2f}'.format(x)})
-        st.write(styler)
+        show_doc(df)
 
         placeholder = st.empty()
         guardar = placeholder.button('Guardar Documento')
@@ -81,12 +77,11 @@ def show(state):
     st.write('# Guardar Documento')
 
     if state.guardado is None:
-        guardar_doc(state)
+        save_doc(state, pd.DataFrame())
     else:
         st.success(
                 f'Documento guardado com '
                 f'**ID {int(state.df.id.max())}**')
-        st.write(state.df)
         novo = st.button('Novo Documento')
         if novo:
             state.guardado = None
