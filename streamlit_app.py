@@ -3,10 +3,19 @@ from state import _get_state
 import guardar
 import consultar
 import gerais
+import db
 
 
 def main():
     state = _get_state()
+
+    if state.df is None:
+        try:
+            dbx = db.get_dropbox_client()
+            state.df = db.download_dataframe(dbx, 'elefante', 'df.xlsx')
+        except Exception:
+            st.warning('Não foi possível extrair base de dados')
+            st.stop()
 
     options = ['Guardar Documento', 'Consultar Documento', 'Consultar Gerais']
 
@@ -19,6 +28,7 @@ def main():
     else:
         gerais.show(state)
 
+    state.sync()
 
 
 if __name__ == '__main__':

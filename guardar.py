@@ -1,24 +1,16 @@
 import streamlit as st
 import pandas as pd
 import datetime
+import math
 
 
-def show(state):
-    st.write('# Guardar Documento')
-
+def guardar_doc(state):
     linhas = st.number_input('Quantas entradas?', 1, step=1)
 
     df = pd.DataFrame(
-            columns=['data', 'codigo', 'centro', 'valor', 'iva', 'total'])
-
-    if state.df is None:
-        state.df = df
-        state.df.insert(loc=0, column='id', value=0)
-
+            columns=['codigo', 'centro', 'valor'])
     total_sem_iva = 0
-    total_iva = 0
     total_documento = 0
-    rows = list()
     codigos = ['1-1', '1-2']
     centros = ['Oeiras', 'Mem Martins']
 
@@ -31,8 +23,7 @@ def show(state):
     data = pd.to_datetime(str(ano) + str(mes), format='%Y%m')
 
     for i in range(linhas):
-        total = 0
-        cols = st.beta_columns(5)
+        cols = st.beta_columns(3)
         codigo = cols[0].selectbox('Codigo', codigos, key=f'codigo_{i}')
         centro = cols[1].selectbox('Centro', centros, key=f'centro_{i}')
         valor = cols[2].text_input(
@@ -43,38 +34,30 @@ def show(state):
             try:
                 valor = float(valor)
                 total_sem_iva += valor
-                total += valor
             except ValueError:
                 st.warning('Valor tem de ser um numero')
                 st.stop()
-        iva = cols[3].text_input(
-                'IVA', value='', key=f'iva_{i}')
-        if len(iva) == 0:
-            iva = float('Nan')
-        else:
-            try:
-                iva = float(iva)
-                total_iva += iva
-                total += iva
-            except ValueError:
-                st.warning('IVA tem de ser um numero')
-                st.stop()
-        cols[4].write('Total')
-        cols[4].write(total)
-        if all([data, codigo, centro, valor, iva, total]):
-            rows.append([data, codigo, centro, valor, iva, total])
+        df.loc[len(df)] = [codigo, centro, valor]
 
     st.write('### Total Documento')
-    st.write('IVA:', total_iva)
-    total_documento = total_sem_iva + total_iva
+    cols = st.beta_columns(5)
+    iva = cols[0].text_input('Total IVA')
+    if len(iva) == 0:
+        iva = float('Nan')
+    else:
+        try:
+            iva = float(iva)
+        except ValueError:
+            st.warning('IVA tem de ser um numero')
+            st.stop()
+    total_documento = total_sem_iva + iva
     st.write('Total:', total_documento)
 
-    if len(rows) < linhas:
-        st.warning('Entradas Incompletas')
-    else:
+    df['data'] = data
+    df['iva'] = iva
+    df = df[['data', 'codigo', 'centro', 'valor', 'iva']]
+    if not math.isnan(total_documento):
         st.write('### Documento')
-        for i in rows:
-            df.loc[len(df)] = i
         styler = df.style.format({
             "data": lambda x: x.strftime('%m-%Y'),
             'valor': lambda x: '{:.2f}'.format(x),
@@ -90,8 +73,21 @@ def show(state):
                     1 if all(state.df.id.isna())
                     else state.df.id.max() + 1,
                     inplace=True)
-
-            placeholder.success(
-                    f'Documento guardado com '
-                    f'**ID {int(state.df.id.max())}**')
             st.write(state.df)
+            state.guardado = True
+
+
+def show(state):
+    st.write('# Guardar Documento')
+
+    if state.guardado is None:
+        guardar_doc(state)
+    else:
+        st.success(
+                f'Documento guardado com '
+                f'**ID {int(state.df.id.max())}**')
+        st.write(state.df)
+        novo = st.button('Novo Documento')
+        if novo:
+            state.guardado = None
+    return
