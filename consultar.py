@@ -8,7 +8,7 @@ def show(state):
         st.warning('Não há ficheiros guardados')
         st.stop()
 
-    cols = st.beta_columns(4)
+    cols = st.beta_columns(3)
     doc_id = cols[0].number_input(
             'ID',
             min_value=int(state.df.id.min()),

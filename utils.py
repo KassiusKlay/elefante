@@ -40,7 +40,6 @@ def save_doc(state, df):
     if df.empty:
         codigos_default = centros_default = [0] * linhas
         valores_default = [''] * linhas
-        iva_default = '0'
         df = pd.DataFrame(
                 columns=['id', 'data', 'codigo', 'centro', 'valor', 'iva'])
         for i in range(linhas):
@@ -56,7 +55,6 @@ def save_doc(state, df):
                 codigos_default.append(0)
                 centros_default.append(0)
                 valores_default.append('')
-        iva_default = df.iva.unique()[0]
     total_sem_iva = 0
     total_documento = 0
 
@@ -98,7 +96,7 @@ def save_doc(state, df):
     cols = st.beta_columns(5)
     iva = cols[0].text_input(
             'Total IVA',
-            value=iva_default,
+            value=str(round(total_sem_iva * .23, 2)),
             key='iva')
     if len(iva) == 0:
         iva = float('Nan')
@@ -108,7 +106,7 @@ def save_doc(state, df):
         except ValueError:
             st.warning('Valor tem de ser numérico')
             st.stop()
-    total_documento = total_sem_iva + iva
+    total_documento = round(total_sem_iva + iva, 2)
     st.write('### Total Documento', total_documento)
 
     df.data = data
