@@ -2,6 +2,9 @@ import streamlit as st
 import pandas as pd
 import datetime
 import math
+import base64
+import os
+from pathlib import Path
 
 
 codigos = [
@@ -23,6 +26,31 @@ def show_doc(df):
         'iva': lambda x: '{:.2f}'.format(x),
         'total': lambda x: '{:.2f}'.format(x)})
     st.write(styler)
+
+
+def color_negative_red(val):
+    color = 'red' if val < 0 else 'black'
+    return 'color: %s' % color
+
+
+def get_binary_file_downloader_html(bin_file, file_label='File'):
+    with open(bin_file, 'rb') as f:
+        data = f.read()
+    bin_str = base64.b64encode(data).decode()
+    href = f'<a href="data:application/octet-stream;base64,{bin_str}" \
+            download="{os.path.basename(bin_file)}">Download {file_label}</a>'
+    return href
+
+
+def show_gerais(df):
+    styler = df.style.applymap(color_negative_red)
+    styler = styler.format("{:.2f}", na_rep="-")
+    st.table(styler)
+    styler.to_excel('file.xlsx', index=True)
+    st.markdown(get_binary_file_downloader_html(
+        'file.xlsx', 'Ficheiro'),
+        unsafe_allow_html=True)
+    Path.unlink(Path('file.xlsx'))
 
 
 def save_doc(state, df):
