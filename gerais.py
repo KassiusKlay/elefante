@@ -37,6 +37,7 @@ def show(state):
         st.warning('Sem entradas para a data especificada')
         st.stop()
 
+    iva = df.groupby('id').agg({'iva': 'max'}).sum()[0]
     df = df.drop(['id', 'data'], axis=1)
     df = df.pivot_table(index='codigo', columns='centro', values='valor')
     df.columns = [i for i in centros if i in df.columns]
@@ -57,5 +58,7 @@ def show(state):
             total_despesas = total_despesas.append(soma.transpose())
         index = df.index.get_loc(teste.iloc[-1].name)
         df = Insert_row_(index + 1, df, soma.transpose())
+    iva_row = pd.Series(iva, index=['Total'], name='IVA')
+    df = df.append(iva_row)
 
     show_gerais(df)
