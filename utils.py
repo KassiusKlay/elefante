@@ -4,6 +4,7 @@ import datetime
 import math
 import base64
 import os
+import db
 from pathlib import Path
 
 
@@ -158,4 +159,10 @@ def save_doc(state, df):
             state.df = pd.concat(
                     [state.df, df]
                     ).drop_duplicates().reset_index(drop=True)
+            try:
+                dbx = db.get_dropbox_client()
+                db.upload_dataframe(dbx, 'elefante', state.df, 'df.xlsx')
+            except Exception:
+                st.warning('Nao foi possivel guardar na base de dados')
+                st.button('Continuar')
             state.guardado = True

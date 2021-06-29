@@ -18,21 +18,29 @@ def Insert_row_(row_number, df, row_value):
 
 def show(state):
     st.write('# Consultar Gerais')
+    opcao = st.radio('', ['Tabela Normal', 'Tabela Teste'])
+    if opcao == 'Tabela Normal':
+        df = state.df.copy().convert_dtypes()
+        if df.empty:
+            st.warning('Sem dados guardados')
+            st.stop()
+    else:
+        df = state.teste.copy()
     cols = st.beta_columns(2)
     mes = cols[0].number_input(
             'Mes',
-            state.teste.data.dt.month.min(),
-            state.teste.data.dt.month.max(),
+            df.data.dt.month.min(),
+            df.data.dt.month.max(),
             step=1)
     ano = cols[1].number_input(
             'Ano',
-            state.teste.data.dt.year.min(),
-            state.teste.data.dt.year.max(),
+            df.data.dt.year.min(),
+            df.data.dt.year.max(),
             step=1)
 
-    df = state.teste.loc[
-            (state.teste.data.dt.month == mes) &
-            (state.teste.data.dt.year == ano)]
+    df = df.loc[
+            (df.data.dt.month == mes) &
+            (df.data.dt.year == ano)]
     if df.empty:
         st.warning('Sem entradas para a data especificada')
         st.stop()
@@ -59,6 +67,6 @@ def show(state):
         index = df.index.get_loc(teste.iloc[-1].name)
         df = Insert_row_(index + 1, df, soma.transpose())
     iva_row = pd.Series(iva, index=['Total'], name='IVA')
-    df = df.append(iva_row)
+    df = df.append(iva_row).fillna(float('Nan'))
 
     show_gerais(df)
