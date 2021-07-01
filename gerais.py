@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from utils import show_gerais
+import numpy as np
 
 
 centros = [
@@ -47,7 +48,9 @@ def show(state):
 
     iva = df.groupby('id').agg({'iva': 'max'}).sum()[0]
     df = df.drop(['id', 'data'], axis=1)
-    df = df.pivot_table(index='codigo', columns='centro', values='valor')
+    df = df.pivot_table(
+            index='codigo', columns='centro',
+            values='valor', aggfunc={'valor': np.sum})
     df.columns = [i for i in centros if i in df.columns]
     df['Total'] = df.sum(axis=1)
     total_despesas = pd.DataFrame(columns=df.columns)
