@@ -19,14 +19,10 @@ def Insert_row_(row_number, df, row_value):
 
 def show(state):
     st.write('# Consultar Gerais')
-    opcao = st.radio('', ['Tabela Normal', 'Tabela Teste'])
-    if opcao == 'Tabela Normal':
-        df = state.df.copy().convert_dtypes()
-        if df.empty:
-            st.warning('Sem dados guardados')
-            st.stop()
-    else:
-        df = state.teste.copy()
+    df = state.df.copy()
+    if df.empty:
+        st.warning('Sem dados guardados')
+        st.stop()
     cols = st.beta_columns(2)
     mes = cols[0].number_input(
             'Mes',
@@ -45,13 +41,16 @@ def show(state):
     if df.empty:
         st.warning('Sem entradas para a data especificada')
         st.stop()
+    else:
+        st.write('## Documentos inseridos na data especificada (PARA TESTAR)')
+        st.write(df)
 
     iva = df.groupby('id').agg({'iva': 'max'}).sum()[0]
     df = df.drop(['id', 'data'], axis=1)
     df = df.pivot_table(
             index='codigo', columns='centro',
             values='valor', aggfunc={'valor': np.sum})
-    df.columns = [i for i in centros if i in df.columns]
+    df = df[[i for i in centros if i in df.columns]]
     df['Total'] = df.sum(axis=1)
     total_despesas = pd.DataFrame(columns=df.columns)
     for i in ['1', '2', '3', '4']:
