@@ -9,10 +9,17 @@ from pathlib import Path
 
 
 codigos = [
-        '1-1', '1-2', '1-3', '1-4', '1-5', '1-6', '1-7', '1-8', '1-9',
-        '1-A', '1-B', '2-1', '2-2', '2-3', '2-4', '2-5', '2-6', '2-7',
-        '2-8', '2-9', '2-A', '3-1', '3-2', '3-3', '3-4', '3-5', '3-6',
-        '3-7', '3-8', '3-9', '3-A', '4-1', '4-2', '4-3', '4-4', '4-5']
+        '1-1 Agua', '1-2 Sabao', '1-3 Jantes', '1-4 Brilho', '1-5 Pre-Lavagem',
+        '1-6 Gas', '1-7 Sal', '1-8 Electricidade', '1-9 Outros',
+        '1-A Mao-Obra', '1-B Ambientadores', '2-1 Fossas', '2-2 Royalties',
+        '2-3 Transportes', '2-4 Seguros', '2-5 Jardineiro', '2-6 Lixo',
+        '2-7 Guarda Noturno',
+        '2-8 Telefones', '2-9 Pessoal', '2-A Diversos', '3-1 Juros',
+        '3-2 Despesas Viaturas', '3-3 Equipamento', '3-4 Terrenos IMT',
+        '3-5 Rendas', '3-6 Gasolina', '3-7 Pessoal Bomba',
+        '3-8 Impostos e Taxas', '3-9 Investimentos', '3-A Jantes',
+        '4-1 IRS', '4-2 Financ. Terrenos', '4-3 Financ. Equipamentos',
+        '4-4 Financ. Obras', '4-5 Financ. Correntes']
 
 centros = [
         'Oeiras', 'Mem Martins', 'Maia', 'São João da Talha',
@@ -56,8 +63,10 @@ def show_gerais(df):
 
 def save_doc(state, df):
     linhas_default = 1 if df.empty else len(df)
+    last_month = (datetime.date.today() - datetime.timedelta(days=62)).month
+
     mes_default = (
-            datetime.date.today().month - 1 if df.empty
+            last_month if df.empty
             else int(df.data.dt.month.unique()[0] - 1))
     ano_default = (
             datetime.date.today().year if df.empty
@@ -120,7 +129,7 @@ def save_doc(state, df):
             except ValueError:
                 st.warning('Valor tem de ser numérico')
                 st.stop()
-        df.at[i, ['codigo', 'centro', 'valor']] = [codigo, centro, valor]
+        df.at[i, ['codigo', 'centro', 'valor']] = [codigo[:3], centro, valor]
 
     cols = st.beta_columns(5)
     iva = cols[0].text_input(

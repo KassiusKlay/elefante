@@ -20,6 +20,7 @@ def Insert_row_(row_number, df, row_value):
 def show(state):
     st.write('# Consultar Gerais')
     df = state.df.copy()
+
     if df.empty:
         st.warning('Sem dados guardados')
         st.stop()
@@ -38,12 +39,10 @@ def show(state):
     df = df.loc[
             (df.data.dt.month == mes) &
             (df.data.dt.year == ano)]
+
     if df.empty:
         st.warning('Sem entradas para a data especificada')
         st.stop()
-    else:
-        st.write('## Documentos inseridos na data especificada (PARA TESTAR)')
-        st.write(df)
 
     iva = df.groupby('id').agg({'iva': 'max'}).sum()[0]
     df = df.drop(['id', 'data'], axis=1)
