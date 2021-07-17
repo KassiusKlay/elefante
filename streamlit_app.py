@@ -17,9 +17,6 @@ def main():
             st.warning('Não foi possível extrair base de dados')
             st.stop()
 
-    if state.teste is None:
-        state.teste = db.download_dataframe(dbx, 'elefante', 'teste.xlsx')
-
     options = ['Guardar Documento', 'Consultar Documento', 'Consultar Gerais']
 
     option = st.sidebar.radio('', options)

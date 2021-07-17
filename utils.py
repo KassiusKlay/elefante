@@ -129,7 +129,7 @@ def save_doc(state, df):
             except ValueError:
                 st.warning('Valor tem de ser numérico')
                 st.stop()
-        df.at[i, ['codigo', 'centro', 'valor']] = [codigo[:3], centro, valor]
+        df.at[i, ['codigo', 'centro', 'valor']] = [codigo, centro, valor]
 
     cols = st.beta_columns(5)
     iva = cols[0].text_input(
