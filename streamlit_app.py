@@ -9,8 +9,6 @@ import db
 def main():
     state = _get_state()
 
-    st.write('hello')
-
     dbx = db.get_dropbox_client()
     if state.df is None:
         try:
