@@ -63,11 +63,11 @@ def show_gerais(df):
 
 def save_doc(state, df):
     linhas_default = 1 if df.empty else len(df)
-    last_month = (datetime.date.today() - datetime.timedelta(days=62)).month
+    iva_flag = True if df.empty else df.iloc[0].iva
 
     mes_default = (
-            last_month if df.empty
-            else int(df.data.dt.month.unique()[0] - 1))
+            datetime.date.today().month - 1 if df.empty
+            else int(df.data.dt.month.unique()[0]))
     ano_default = (
             datetime.date.today().year if df.empty
             else df.data.dt.year.unique()[0])
@@ -97,9 +97,12 @@ def save_doc(state, df):
     total_documento = 0
 
     cols = st.beta_columns(2)
-    mes = cols[0].selectbox(
-            'Mês Referência', range(1, 13),
-            index=mes_default, key='mes')
+    mes = cols[0].number_input(
+            'Mes Referencia',
+            min_value=1,
+            max_value=12,
+            value=mes_default,
+            step=1)
     ano = cols[1].number_input(
             'Ano Referência', value=ano_default, step=1, key='ano')
     data = pd.to_datetime(str(ano) + str(mes), format='%Y%m')
@@ -134,7 +137,8 @@ def save_doc(state, df):
     cols = st.beta_columns(5)
     iva = cols[0].text_input(
             'Total IVA',
-            value=str(round(total_sem_iva * .23, 2)),
+            value=str(round(total_sem_iva * .23, 2)) if iva_flag
+            else str(iva_flag),
             key='iva')
     if len(iva) == 0:
         iva = float('Nan')

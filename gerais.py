@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from utils import show_gerais
 import numpy as np
+import datetime
 
 
 centros = [
@@ -27,13 +28,15 @@ def show(state):
     cols = st.beta_columns(2)
     mes = cols[0].number_input(
             'Mes',
-            df.data.dt.month.min(),
-            df.data.dt.month.max(),
+            min_value=df.data.dt.month.min(),
+            max_value=df.data.dt.month.max(),
+            value=datetime.date.today().month - 1,
             step=1)
     ano = cols[1].number_input(
             'Ano',
-            df.data.dt.year.min(),
-            df.data.dt.year.max(),
+            min_value=df.data.dt.year.min(),
+            max_value=df.data.dt.year.max(),
+            value=datetime.date.today().year,
             step=1)
 
     df = df.loc[
