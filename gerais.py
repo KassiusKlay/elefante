@@ -30,13 +30,13 @@ def show(state):
             'Mes',
             min_value=df.data.dt.month.min(),
             max_value=df.data.dt.month.max(),
-            value=min_value,
+            value=df.data.dt.month.min(),
             step=1)
     ano = cols[1].number_input(
             'Ano',
             min_value=df.data.dt.year.min(),
             max_value=df.data.dt.year.max(),
-            value=min_value,
+            value=df.data.dt.year.min(),
             step=1)
 
     df = df.loc[
