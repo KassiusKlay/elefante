@@ -72,7 +72,7 @@ def save_doc(state, df):
             datetime.date.today().year if df.empty
             else df.data.dt.year.unique()[0])
     if mes_default == 0:
-        mes_default = 1
+        mes_default = 12
         ano_default -= 1
     linhas = st.number_input(
             'Quantas entradas?', min_value=1, value=linhas_default,
